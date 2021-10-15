@@ -18,7 +18,7 @@ public class SocketClient {
         }
 
         //Getting user id
-        System.out.println("Enter your id: ");
+        System.out.print("Enter your id: ");
         Scanner scanner = new Scanner(System.in);
         String id = scanner.next();
 
@@ -28,23 +28,30 @@ public class SocketClient {
         mSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                mSocket.emit("msg", "Hello from Java");
-
                 JSONObject object = new JSONObject();
                 try {
                     object.put("email", id);
 
                     //Join by id
                     mSocket.emit("join",object);
+
+                    mSocket.emit("msg", id+" joined");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
+
+        //Message events
         mSocket.on("msg", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 System.out.println(args[0]);
+
+                System.out.print("Type a message: ");
+                Scanner scanner = new Scanner(System.in);
+                String message = scanner.nextLine();
+                mSocket.emit("msg",message);
             }
         });
 
